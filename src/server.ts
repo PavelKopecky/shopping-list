@@ -20,10 +20,11 @@ app.set('view engine', 'html');
 app.use(express.urlencoded({extended: false}));
 app.use('/', (req, res, next) => {
     if (req.path !== '/') {
-        return next();
+        return req.path === '/login' && req.session!.authorized ?
+            res.redirect('/') : next();
     } else {
         if (req.session!.authorized) {
-            next();
+            return next();
         } else {
             console.log('not verified');
             res.redirect('/register');
@@ -37,6 +38,11 @@ app.use(express.static(__dirname + '/../views', {
 }));
 
 app.post('/login', async (req, res, next) => {
+
+    if (req.session!.authorized) {
+        return res.redirect('/');
+    }
+
     const user = userList.find((user) => req.body.username === user.name);
 
     if (!user) {
@@ -76,5 +82,16 @@ app.post('/register', async (req, res, next) => {
         res.redirect('/register');
     }
 });
+
+app.post('/logout', function (req, res, next) {
+    console.log('user logged out');
+    req.session!.user = null;
+    req.session!.authorized = false;
+    req.session!.save(function () {
+        req.session!.regenerate(function () {
+            res.redirect('/login')
+        })
+    })
+})
 
 app.listen(3000);

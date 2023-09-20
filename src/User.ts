@@ -4,7 +4,6 @@ export class User {
     name : string;
     hashedPassword : string;
     shoppingList : ShoppingListEntry[] = [];
-    inSession : boolean = false;
 
     constructor(name : string, hashedPassword : string) {
         this.name = name;
