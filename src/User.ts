@@ -1,13 +1,12 @@
 import {ShoppingListEntry} from "./ShoppingListEntry.js";
 
 export class User {
-    id : string;
     name : string;
     hashedPassword : string;
     shoppingList : ShoppingListEntry[] = [];
+    inSession : boolean = false;
 
-    constructor(id : string, name : string, hashedPassword : string) {
-        this.id = id;
+    constructor(name : string, hashedPassword : string) {
         this.name = name;
         this.hashedPassword = hashedPassword;
     }
