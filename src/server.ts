@@ -1,59 +1,40 @@
-// if (process.env.NODE_ENV !== 'production') {
-//     require('dotenv').config();
-// }
-
 import * as express from 'express';
 import {User} from "./User.js";
 
 const bcrypt = require('bcrypt');
 const path = require('path');
-// const passport = require('passport');
-// const session = require('express-session');
-//
-// import {initialize as initializePassport} from './passport-config.js';
-// initializePassport(passport, (username : string) => {
-//     userList.find((user) => username === user.name);
-// });
+const session = require('express-session');
 
 const app = express();
 const userList : User[] = [];
-const inSession : boolean = false;
+
+app.use(session({
+    secret: 'thisSecretIsEnoughForThisApp',
+    resave: true,
+    saveUninitialized: false,
+    user: ''
+}))
 
 app.set('view engine', 'html');
 //grants access to the forms in the html files through the req variables
 app.use(express.urlencoded({extended: false}));
+app.use('/', (req, res, next) => {
+    if (req.path !== '/') {
+        return next();
+    } else {
+        if (req.session!.authorized) {
+            next();
+        } else {
+            console.log('not verified');
+            res.redirect('/register');
+        }
+    }
+});
+
 //replaces app.get, loads static pages from the directory automatically
 app.use(express.static(__dirname + '/../views', {
     extensions: [ 'html' ]
 }));
-// app.use(session({
-//     secret: process.env.PROCESS_SECRET,
-//     resave: false,
-//     save: false
-// }))
-// app.use(passport.initialize());
-// app.use(passport.session());
-
-app.get('/', (req, res, next) => {
-    inSession ? next() : res.redirect('/login');
-})
-
-
-app.post('/register', async (req, res, next) => {
-    try {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        userList.push(new User(
-            req.body.username,
-            hashedPassword
-        ));
-        console.log(userList);
-        userList.length ? res.redirect('/login') : res.redirect('/register');
-
-    } catch {
-        res.redirect('/register');
-    }
-    next();
-});
 
 app.post('/login', async (req, res, next) => {
     const user = userList.find((user) => req.body.username === user.name);
@@ -62,19 +43,38 @@ app.post('/login', async (req, res, next) => {
         console.log('user not found');
         res.redirect('/login');
     } else {
-        bcrypt.compare(req.body.password, user.hashedPassword, (err, res) => {
+        bcrypt.compare(req.body.password, user.hashedPassword, (err, data) => {
             if (err){
                 console.log('err');
             }
-            if (res) {
+            if (data) {
                 console.log('login successful');
+                req.session!.name = user.name;
+                req.session!.authorized = true;
+                res.redirect('/');
+                return;
             } else {
                 console.log('passwords do not match');
+                res.status(302).redirect('/login');
+                return;
             }
         });
     }
+});
 
-    next();
+app.post('/register', async (req, res, next) => {
+    try {
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        userList.push(new User(
+            req.body.username,
+            hashedPassword
+        ));
+        res.redirect('/login');
+        next();
+    } catch {
+        console.log('reg err');
+        res.redirect('/register');
+    }
 });
 
 app.listen(3000);
