@@ -28,7 +28,7 @@ app.use('/', router);
 
 router.get('/', (req, res, next) => {
     console.log('reached, ' + req.session!.username);
-    res.render('index', {username: req.session!.username});
+    return req.session!.authorized ? res.render('index', {username: req.session!.username}) : next();
 })
 
 app.use('/', (req, res, next) => {

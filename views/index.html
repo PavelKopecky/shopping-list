@@ -5,14 +5,20 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
+  <link rel="stylesheet" href="styles/register.css">
+  <title>Register</title>
 </head>
 <body>
-<div>
-  <h1>Hello, {{ username }}</h1>
+<div class="form-center">
+  <h2>Hello, {{username}}</h2>
   <form action="/logout" method="post">
-    <button type="submit" id="logout-button">Logout</button>
+    <button>Logout</button>
   </form>
 </div>
+<footer>
+  <p>
+    Pavel Kopecký 2023
+  </p>
+</footer>
 </body>
 </html>
