@@ -12,30 +12,29 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.setup = void 0;
 const User_1 = require("../User");
 const express = require("express");
-const bcrypt = require('bcrypt');
-let userList = [];
+const bcrypt = require("bcrypt");
+const userList = [];
 const setup = (app, router) => {
-    app.use(express.static(__dirname + '/../views', {
-        extensions: ['hbs']
-    }));
-    router.get('/', (req, res, next) => {
-        console.log('/');
-        return req.session.authorized ? res.render('main', { username: req.session.username, title: 'Home page' }) : next();
+    app.use(express.static(__dirname + '/../../src/public'));
+    router.get('/', (req, res) => {
+        console.log('/', req.session.authorized);
+        return req.session.authorized ? res.render('main', { username: req.session.username, title: 'Home page' })
+            : res.render('login');
     });
-    router.get('/login', (req, res, next) => {
+    router.get('/login', (req, res) => {
         console.log('/login');
-        return req.session.authorized ? res.render('main', { username: req.session.username, title: 'Login' }) :
-            res.render('login');
+        return req.session.authorized ? res.render('main', { username: req.session.username, title: 'Login' })
+            : res.render('login');
     });
-    router.get('/register', (req, res, next) => {
+    router.get('/register', (req, res) => {
         console.log('/register');
         return res.render('register', { username: req.session.username, title: 'Register' });
     });
-    app.post('/login', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    app.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (req.session.authorized) {
             return res.redirect('/');
         }
-        const user = userList.find((user) => req.body.username === user.name);
+        const user = userList.find(user => req.body.username === user.name);
         if (!user) {
             console.log('user not found');
             res.redirect('/login');
@@ -50,12 +49,10 @@ const setup = (app, router) => {
                     req.session.username = user.name;
                     req.session.authorized = true;
                     res.redirect('/');
-                    return;
                 }
                 else {
                     console.log('passwords do not match');
                     res.redirect('/login');
-                    return;
                 }
             });
         }
@@ -72,12 +69,12 @@ const setup = (app, router) => {
             res.redirect('/register');
         }
     }));
-    app.post('/logout', function (req, res, next) {
+    app.post('/logout', (req, res) => {
         console.log('user logged out');
         req.session.username = null;
         req.session.authorized = false;
-        req.session.save(function () {
-            req.session.regenerate(function () {
+        req.session.save(() => {
+            req.session.regenerate(() => {
                 res.redirect('/login');
             });
         });

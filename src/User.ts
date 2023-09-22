@@ -1,12 +1,12 @@
-import {ShoppingListEntry} from "./ShoppingListEntry.js";
+import { ShoppingListEntry } from './ShoppingListEntry.js';
 
 export class User {
-    name : string;
-    hashedPassword : string;
-    shoppingList : ShoppingListEntry[] = [];
+	name : string;
+	hashedPassword : string;
+	shoppingList : ShoppingListEntry[] = [];
 
-    constructor(name : string, hashedPassword : string) {
-        this.name = name;
-        this.hashedPassword = hashedPassword;
-    }
+	constructor (name : string, hashedPassword : string) {
+		this.name = name;
+		this.hashedPassword = hashedPassword;
+	}
 }

@@ -1,25 +1,39 @@
 {
-  "name": "yarn",
-  "version": "1.0.0",
-  "main": "/src/server.js",
-  "scripts": {
-    "devStart": "tsc-watch --onSuccess \"node ./dist/server.js\""
-  },
-  "repository": "git@github.com:PavelKopecky/shopping-list.git",
-  "author": "Pavel Kopecký <pavel.kopecky@icloud.com>",
-  "license": "MIT",
-  "dependencies": {
-    "bcrypt": "^5.1.1",
-    "express": "^4.18.2",
-    "express-handlebars": "^7.1.2",
-    "express-session": "^1.17.3"
-  },
-  "devDependencies": {
-    "@types/express": "^4.17.17",
-    "@types/express-session": "1.17.0",
-    "@types/node": "^20.6.2",
-    "nodemon": "^3.0.1",
-    "tsc-watch": "^6.0.4",
-    "typescript": "^5.2.2"
-  }
+	"name": "yarn",
+	"version": "1.0.0",
+	"main": "/src/server.js",
+	"scripts": {
+		"devStart": "tsc-watch --onSuccess \"node ./dist/server.js\"",
+		"prepare": "husky install || echo 'Failed to install husky'"
+	},
+	"repository": "git@github.com:PavelKopecky/shopping-list.git",
+	"author": "Pavel Kopecký <pavel.kopecky@icloud.com>",
+	"license": "MIT",
+	"dependencies": {
+		"bcrypt": "^5.1.1",
+		"express": "^4.18.2",
+		"express-handlebars": "^7.1.2",
+		"express-session": "^1.17.3"
+	},
+	"devDependencies": {
+		"@martin-kolarik/eslint-config": "^7.1.6",
+		"@types/express": "^4.17.17",
+		"@types/express-session": "1.17.0",
+		"@types/node": "^20.6.2",
+		"@typescript-eslint/eslint-plugin": "^6.7.2",
+		"@typescript-eslint/parser": "^6.7.2",
+		"eslint": "^8.49.0",
+		"eslint-plugin-jsonc": "^2.9.0",
+		"eslint-plugin-node": "^11.1.0",
+		"eslint-plugin-prefer-let": "^3.0.1",
+		"eslint-plugin-promise": "^6.1.1",
+		"husky": "^8.0.3",
+		"lint-staged": "^14.0.1",
+		"nodemon": "^3.0.1",
+		"tsc-watch": "^6.0.4",
+		"typescript": "^5.2.2"
+	},
+	"lint-staged": {
+		"*.{cjs,js,json,ts}": "eslint --fix"
+	}
 }
