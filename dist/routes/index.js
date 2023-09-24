@@ -17,60 +17,50 @@ const userList = [];
 const setup = (app, router) => {
     app.use(express.static(__dirname + '/../../src/public'));
     router.get('/', (req, res) => {
-        console.log('/', req.session.authorized);
         return req.session.authorized ? res.render('main', { username: req.session.username, title: 'Home page' })
-            : res.render('login');
+            : res.redirect('/login');
     });
     router.get('/login', (req, res) => {
-        console.log('/login');
-        return req.session.authorized ? res.render('main', { username: req.session.username, title: 'Login' })
-            : res.render('login');
+        return req.session.authorized ? res.render('main', { username: req.session.username, title: 'Welcome!' })
+            : res.render('login', { title: 'Login' });
     });
     router.get('/register', (req, res) => {
-        console.log('/register');
         return res.render('register', { username: req.session.username, title: 'Register' });
     });
-    app.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    app.post('/login', (req, res) => {
         if (req.session.authorized) {
             return res.redirect('/');
         }
         const user = userList.find(user => req.body.username === user.name);
         if (!user) {
             console.log('user not found');
-            res.redirect('/login');
+            return res.render('login', { title: 'Login', message: 'User not found.' });
         }
-        else {
-            bcrypt.compare(req.body.password, user.hashedPassword, (e, data) => {
-                if (e) {
-                    console.log(e);
-                }
-                if (data) {
-                    console.log('login successful');
-                    req.session.username = user.name;
-                    req.session.authorized = true;
-                    res.redirect('/');
-                }
-                else {
-                    console.log('passwords do not match');
-                    res.redirect('/login');
-                }
-            });
-        }
-    }));
-    app.post('/register', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-        try {
-            const hashedPassword = yield bcrypt.hash(req.body.password, 10);
+        bcrypt.compare(req.body.password, user.hashedPassword, (e, data) => {
+            if (e) {
+                console.log(e);
+            }
+            if (data) {
+                req.session.username = user.name;
+                req.session.authorized = true;
+                res.redirect('/');
+            }
+            else {
+                return res.render('login', { title: 'Login', message: 'Wrong password.' });
+            }
+        });
+    });
+    router.post('/register', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+        bcrypt.hash(req.body.password, 10).then((hashedPassword) => {
+            if (userList.find(user => req.body.username === user.name)) {
+                return res.render('register', { title: 'Register', message: 'This username is taken.' });
+            }
             userList.push(new User_1.User(req.body.username, hashedPassword));
             res.redirect('/login');
             next();
-        }
-        catch (e) {
-            console.log(e);
-            res.redirect('/register');
-        }
+        }).catch(() => res.redirect('/register'));
     }));
-    app.post('/logout', (req, res) => {
-        console.log('user logged out');
+    router.post('/logout', (req, res) => {
         req.session.username = null;
         req.session.authorized = false;
         req.session.save(() => {
