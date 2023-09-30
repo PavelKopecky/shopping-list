@@ -1,0 +1,19 @@
+#list {
+    height: 80px;
+    border: 1px solid #ffffff;
+    background-color: #e9f4ff;
+    margin-top: 10px;
+}
+
+#list:focus {
+    background-color: #bee1ff;
+}
+
+textarea {
+    max-width: 95%;
+    max-height: 250px;
+}
+
+button {
+    margin-top: 20px;
+}

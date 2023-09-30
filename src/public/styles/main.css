@@ -33,7 +33,7 @@ input {
     color: #184b73;
     background-color: #ffffff;
     user-select: none;
-    border-bottom: 1px solid #184b73;;
+    border-bottom: 1px solid #184b73;
 }
 input:focus {
     box-shadow: 0 1px 1px -1px #666;

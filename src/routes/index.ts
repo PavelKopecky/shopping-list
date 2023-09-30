@@ -1,6 +1,7 @@
 import { User } from '../User';
 import * as express from 'express';
 import * as bcrypt from 'bcrypt';
+import { ShoppingListEntry } from '../ShoppingListEntry';
 
 const userList : User[] = [];
 
@@ -8,17 +9,21 @@ export const setup = (app, router) => {
 	app.use(express.static(__dirname + '/../../src/public'));
 
 	router.get('/', (req, res) => {
-		return req.session!.authorized ? res.render('main', { username: req.session!.username, title: 'Home page' })
+		return req.session!.authorized ? res.render('main', { user: userList.find(user => user.name === req.session!.username), title: 'Home page' })
 			: res.redirect('/login');
 	});
 
 	router.get('/login', (req, res) => {
-		return req.session!.authorized ? res.render('main', { username: req.session!.username, title: 'Welcome!' })
+		return req.session!.authorized ? res.render('main', { user: userList.find(user => user.name === req.session!.username), title: 'Home page' })
 			: res.render('login', { title: 'Login' });
 	});
 
 	router.get('/register', (req, res) => {
 		return res.render('register', { username: req.session!.username, title: 'Register' });
+	});
+
+	router.get('/add-entry', (req, res) => {
+		return res.render('add-entry', { title: 'Add Entry' });
 	});
 
 	app.post('/login', (req, res) => {
@@ -73,5 +78,39 @@ export const setup = (app, router) => {
 				res.redirect('/login');
 			});
 		});
+	});
+
+	router.post('/add-entry', (req, res) => {
+		res.redirect('/add-entry');
+	});
+
+	router.post('/save-entry', (req, res) => {
+		const user = userList.find(user => req.session.username === user.name);
+		console.log(user!.shoppingList);
+
+		if (user!.shoppingList.find(entry => entry.date === req.body.date)) {
+			console.log('slort already filled');
+		} else {
+			console.log(req.body.date, [ req.body.list ]);
+			let i = 0;
+
+			// linear is enough
+			for (const entry of user!.shoppingList) {
+				if (entry.date > req.body.date) {
+					break;
+				} else {
+					i++;
+				}
+			}
+
+			user?.shoppingList.splice(i, 0, new ShoppingListEntry(req.body.date, [ req.body.list ]));
+			res.redirect('/');
+		}
+	});
+
+	router.post('/show-entry', (req, res) => {
+		const user = userList.find(user => req.session.username === user.name);
+		console.log(user?.shoppingList.find(entry => entry.date === req.body.bttn));
+		res.redirect('/');
 	});
 };
