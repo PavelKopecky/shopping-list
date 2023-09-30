@@ -1,0 +1,31 @@
+<link rel="stylesheet" href="/styles/entry.css">
+<div class="form-center">
+  <h2>{{entry.date}}</h2>
+  <div class="entry-content">
+    <ul>
+      {{#each entry.content}}
+        <li>{{this}}</li>
+      {{/each}}
+    </ul>
+  </div>
+  <div class="buttons">
+    {{#if notFirst}}
+      <form class="prev-form" action="/prev-entry" method="post">
+        <button class="prev-btn" name="bttn" value={{entry.date}}><</button>
+      </form>
+    {{/if}}
+    <form class="back-form" action="/back" method="post">
+      <button class="back-btn">Back</button>
+    </form>
+    {{#if notLast}}
+      <form class="next-form" action="/next-entry" method="post">
+        <button class="next-btn" name="bttn" value={{entry.date}}>></button>
+      </form>
+    {{/if}}
+  </div>
+</div>
+<footer>
+  <p>
+    Pavel Kopecký 2023
+  </p>
+</footer>

@@ -110,7 +110,56 @@ export const setup = (app, router) => {
 
 	router.post('/show-entry', (req, res) => {
 		const user = userList.find(user => req.session.username === user.name);
-		console.log(user?.shoppingList.find(entry => entry.date === req.body.bttn));
+		const entry = user?.shoppingList.find(entry => entry.date === req.body.bttn);
+
+		if (!entry) {
+			res.redirect('/');
+		}
+
+		res.render('entry', {
+			entry,
+			notFirst: !(entry!.date === user!.shoppingList[0].date),
+			notLast: !(entry!.date === user!.shoppingList[user!.shoppingList.length - 1].date),
+		});
+	});
+
+	router.post('/back', (req, res) => {
 		res.redirect('/');
+	});
+
+	router.post('/prev-entry', (req, res) => {
+		const user = userList.find(user => req.session.username === user.name);
+		let entry = user?.shoppingList.find(entry => entry.date === req.body.bttn);
+
+		if (!entry) {
+			res.redirect('/');
+		}
+
+		const index = user!.shoppingList.indexOf(entry!);
+		entry = user!.shoppingList[index - 1];
+
+		res.render('entry', {
+			entry,
+			notFirst: !(entry!.date === user!.shoppingList[0].date),
+			notLast: !(entry!.date === user!.shoppingList[user!.shoppingList.length - 1].date),
+		});
+	});
+
+	router.post('/next-entry', (req, res) => {
+		const user = userList.find(user => req.session.username === user.name);
+		let entry = user?.shoppingList.find(entry => entry.date === req.body.bttn);
+
+		if (!entry) {
+			res.redirect('/');
+		}
+
+		const index = user!.shoppingList.indexOf(entry!);
+		entry = user!.shoppingList[index + 1];
+
+		res.render('entry', {
+			entry,
+			notFirst: !(entry!.date === user!.shoppingList[0].date),
+			notLast: !(entry!.date === user!.shoppingList[user!.shoppingList.length - 1].date),
+		});
 	});
 };
