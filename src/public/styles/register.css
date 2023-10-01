@@ -1,0 +1,17 @@
+.disabled {
+    background-color: #bee1ff;
+    cursor: default;
+}
+.enabled {
+    background-color: #004f94;
+    cursor: pointer;
+}
+.weak {
+    border-color: #ff4d4d;
+}
+.average {
+    border-color: #edff00;
+}
+.strong {
+    border-color: #24ff28;
+}

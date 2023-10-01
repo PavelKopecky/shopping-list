@@ -1,14 +1,17 @@
+<script src="/static/passwordValidation.js"></script>
+<link rel="stylesheet" href="/styles/register.css">
+
 <div class="form-center">
   <h2 class="register-header">Register</h2>
   <form action="/register" method="POST">
     <label for="username">Username</label><br>
-    <input id="username" name="username" required>
+    <input id="username" name="username" maxlength="19" required>
     <br><br>
     <label for="password">Password</label><br>
-    <input id="password" type="password" name="password" required>
+    <input id="password" type="password" name="password" required onkeydown="checkPassword()">
     <br><br>
     <p class="error-message">{{ message }}</p>
-    <button type="submit">Register</button>
+    <button class="disabled" id="submit" type="submit" disabled>Register</button>
   </form>
   <br>
   <a href="/login">Already registered?</a>

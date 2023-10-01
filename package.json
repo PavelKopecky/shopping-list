@@ -3,8 +3,9 @@
 	"version": "1.0.0",
 	"main": "/src/server.js",
 	"scripts": {
-		"devStart": "tsc-watch --onSuccess \"node ./dist/server.js\"",
-		"prepare": "husky install || echo 'Failed to install husky'"
+		"devStart": "tsc-watch --onSuccess \"yarn run start\"",
+		"prepare": "husky install || echo 'Failed to install husky'",
+		"start": "rm -rf ./src/public/static/; mv -f ./dist/static ./src/public; node ./dist/server.js"
 	},
 	"repository": "git@github.com:PavelKopecky/shopping-list.git",
 	"author": "Pavel Kopecký <pavel.kopecky@icloud.com>",

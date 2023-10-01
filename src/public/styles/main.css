@@ -34,6 +34,7 @@ input {
     background-color: #ffffff;
     user-select: none;
     border-bottom: 1px solid #184b73;
+    margin-top: 5px;
 }
 input:focus {
     box-shadow: 0 1px 1px -1px #666;
